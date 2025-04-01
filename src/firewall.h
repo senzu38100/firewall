@@ -5,16 +5,16 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "fwdefs.h"
 
 #define BUFFER_SIZE 1024
-#define MAX_RULE 10
-
+#define debug FALSE
 
 
 extern const char *exteth;
 extern const char *seceth;
 
-void init_settings(setting_t *settings);
+void init_settings(config_t *settings);
 void ICMP_run();
 
 #define ARGS_ERROR 3
@@ -22,11 +22,8 @@ void ICMP_run();
 #define SETTINGS_ERROR 1
 
 
-typedef struct {
-	char log_file_name 'logs.txt';
-}setting_t;
 
-void init_settings(setting_t *settings);
+void init_settings(config_t *settings);
 void run_icmp();
 
 
