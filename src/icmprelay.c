@@ -3,9 +3,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <netinet/ip.h>      // struct iphdr
+#include <netinet/ip_icmp.h> // ICMP constants
+#include <arpa/inet.h>       // inet_ntoa
 
 #include "icmprelay.h"
 #include "fwdefs.h"
+
+// Network headers sizes:
+// 		Ethernet: 14bytes	
+// 		IP (IPV4 without options) : 20bytes
+// 		ICMP : 8bytes (Echo request minimum)
 
 void *icmp_handler(void *arg) {
     config_t *conf = (config_t *)arg;
@@ -41,6 +49,33 @@ void *icmp_handler(void *arg) {
         const u_char *packet = pcap_next(handle, &header);
 
         if (!packet) continue;
+		// Skip Ethernet header (14 bytes)
+		const u_char *ip_packet = packet + 14;
+
+		// Extract IP header
+		struct iphdr *ip = (struct iphdr *)ip_packet;
+
+		// Check if protocol is ICMP (1)
+		if (ip->protocol != 1) {
+			continue;
+		}
+
+		// Extract source IP as string
+		struct in_addr src_addr;
+		src_addr.s_addr = ip->saddr;
+		char *src_ip = inet_ntoa(src_addr);
+
+		// Move past IP header to reach ICMP header
+		int ip_header_len = ip->ihl * 4;
+		const u_char *icmp_packet = ip_packet + ip_header_len;
+
+		// First byte of ICMP is the type
+		uint8_t icmp_type = icmp_packet[0];
+
+		// Echo request = type 8
+		if (icmp_type == 8) {
+			printf("[ICMP] Echo request from %s\n", src_ip);
+		}
 
         // TODO: parse Ethernet + IP + ICMP headers
         // TODO: apply rules (DROP/FORWARD)
