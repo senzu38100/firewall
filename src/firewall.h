@@ -8,8 +8,6 @@
 #include "fwdefs.h"
 
 #define BUFFER_SIZE 1024
-#define debug FALSE
-
 
 extern const char *exteth;
 extern const char *seceth;

@@ -11,6 +11,7 @@
 #define MAX_RULE 50
 #define IP_LENGTH 16
 #define MAC_LENGTH 18
+#define DEBUG_MODE 0
 
 // Error codes
 #define ARGS_ERROR 3

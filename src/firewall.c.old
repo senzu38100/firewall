@@ -1,7 +1,7 @@
 #include "firewall.h"
 #include "fwdefs.h"
 #include "ruleparser.h"
-#include "icmprelay.h"
+#include "icmprelay.c"
 
 void init_rules() {
 	rule_t rules[MAX_RULE]; //allocate array of rule_t
